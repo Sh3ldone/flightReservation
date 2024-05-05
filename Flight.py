@@ -44,16 +44,21 @@ def displayFlights():
 def bookFlight(name, address, age, passportID, flightNumber):
     try:
         if age < 18:
-        st.info("Since you are below 18 years old, we need some information from your parents.")
-        parent_name = st.text_input("Enter the name of your parent:")
-        parent_contact = st.text_input("Enter the contact number of your parent:")
-        parent_email = st.text_input("Enter the email address of your parent:")
-        
-        # Check if all parent information is provided
-        if not parent_name or not parent_contact or not parent_email:
-            st.warning("Please provide all required information of your parent.")
-            return
+            st.info("Since you are below 18 years old, we need some information from your parents.")
+            parent_name = st.text_input("Enter the name of your parent:")
+            parent_contact = st.text_input("Enter the contact number of your parent:")
+            parent_email = st.text_input("Enter the email address of your parent:")
+            
+            # Check if all parent information is provided
+            if not parent_name or not parent_contact or not parent_email:
+                st.warning("Please provide all required information of your parent.")
+                return
 
+            else:
+                parent_name = None
+                parent_contact = None
+                parent_email = None
+            
         else:
             parent_name = None
             parent_contact = None
@@ -68,6 +73,7 @@ def bookFlight(name, address, age, passportID, flightNumber):
         st.success("Flight booked successfully.")
     except sqlite3.Error as e:
         st.error(f"Error booking flight: {e}")
+
 
 def displayBookedPassengers():
     try:
