@@ -21,14 +21,20 @@ except sqlite3.Error as e:
 
 def addFlight(flightNumber, origin, destination, availableSeats):
     try:
-        c.execute('''INSERT INTO flights (flightNumber, origin, destination, availableSeats) 
-                     VALUES (?, ?, ?, ?)''', (flightNumber, origin, destination, availableSeats))
-        conn.commit()
-    except sqlite3.Error as e:
-        if "database is locked" in str(e):
-            st.error("Database is locked. Please try again later.")
+        # Check if flight number already exists
+        c.execute("SELECT flightNumber FROM flights WHERE flightNumber = ?", (flightNumber,))
+        existing_flight = c.fetchone()
+        if existing_flight:
+            st.warning(f"Flight with number {flightNumber} already exists.")
         else:
-            st.error(f"An error occurred: {e}")
+            # Insert new flight record
+            c.execute('''INSERT INTO flights (flightNumber, origin, destination, availableSeats) 
+                         VALUES (?, ?, ?, ?)''', (flightNumber, origin, destination, availableSeats))
+            conn.commit()
+            st.success("Flight added successfully.")
+    except sqlite3.Error as e:
+        st.error(f"An error occurred: {e}")
+
 
 def displayFlights():
     try:
