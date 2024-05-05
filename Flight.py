@@ -43,7 +43,7 @@ def displayFlights():
 
 def bookFlight(name, address, age, passportID, flightNumber):
     try:
- if age < 18:
+        if age < 18:
         st.info("Since you are below 18 years old, we need some information from your parents.")
         parent_name = st.text_input("Enter the name of your parent:")
         parent_contact = st.text_input("Enter the contact number of your parent:")
