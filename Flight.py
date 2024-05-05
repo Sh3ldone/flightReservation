@@ -20,6 +20,7 @@ def addFlight(flightNumber, origin, destination, availableSeats):
                  VALUES (?, ?, ?, ?)''', (flightNumber, origin, destination, availableSeats))
     conn.commit()
 
+
 def displayFlights():
     st.write("Available Flights:")
     for row in c.execute("SELECT * FROM flights"):
