@@ -33,7 +33,6 @@ def addFlight(flightNumber, origin, destination, availableSeats):
             st.success("Flight added successfully.")
     except sqlite3.Error as e:
         st.error(f"An error occurred: {e}")
-
 def bookFlight(name, address, age, passportID, flightNumber, parent_name=None, parent_contact=None, parent_email=None):
     try:
         if age < 18:
@@ -46,6 +45,10 @@ def bookFlight(name, address, age, passportID, flightNumber, parent_name=None, p
             if not (parent_name and parent_contact and parent_email):
                 st.warning("Please provide all required information of your parent.")
                 return
+        else:
+            parent_name = None
+            parent_contact = None
+            parent_email = None
 
         c.execute('''INSERT INTO passengers (name, address, age, passportID, flightNumber, parentName, parentContact, parentEmail) 
                      VALUES (?, ?, ?, ?, ?, ?, ?, ?)''', 
@@ -56,6 +59,7 @@ def bookFlight(name, address, age, passportID, flightNumber, parent_name=None, p
         st.success("Flight booked successfully.")
     except sqlite3.Error as e:
         st.error(f"Error booking flight: {e}")
+
 
 def displayBookedPassengers():
     try:
