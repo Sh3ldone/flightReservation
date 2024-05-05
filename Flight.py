@@ -43,12 +43,25 @@ def displayFlights():
 
 def bookFlight(name, address, age, passportID, flightNumber):
     try:
-        c.execute('''INSERT INTO passengers (name, address, age, passportID, flightNumber) 
-                     VALUES (?, ?, ?, ?, ?)''', (name, address, age, passportID, flightNumber))
+        if age < 18:
+            st.info("Since you are below 18 years old, we need some information from your parents.")
+            parent_name = st.text_input("Enter the name of your parent:")
+            parent_contact = st.text_input("Enter the contact number of your parent:")
+            parent_email = st.text_input("Enter the email address of your parent:")
+        else:
+            parent_name = None
+            parent_contact = None
+            parent_email = None
+            
+        c.execute('''INSERT INTO passengers (name, address, age, passportID, flightNumber, parentName, parentContact, parentEmail) 
+                     VALUES (?, ?, ?, ?, ?, ?, ?, ?)''', 
+                     (name, address, age, passportID, flightNumber, parent_name, parent_contact, parent_email))
+                     
         c.execute('''UPDATE flights SET availableSeats = availableSeats - 1 WHERE flightNumber = ?''', (flightNumber,))
         conn.commit()
     except sqlite3.Error as e:
         st.error(f"Error booking flight: {e}")
+
 
 def displayBookedPassengers():
     try:
