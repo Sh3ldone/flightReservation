@@ -38,6 +38,10 @@ def displayBookedPassengers():
 
 def main():
     st.title("Flight Reservation System")
+    addFlight(1001, "Surigao City", "Davao City", 100)
+    addFlight(1002, "Surigao City", "Cebu City", 80)
+    addFlight(1003, "Surigao City", "Manila", 120)
+
     menu = st.sidebar.selectbox("Menu", ["Display Available Flights", "Book a Flight", "Display Booked Passengers"])
 
     if menu == "Display Available Flights":
