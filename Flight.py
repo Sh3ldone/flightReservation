@@ -66,7 +66,6 @@ def bookFlight():
                     st.error("No available seats for this flight.")
                     return
         st.error("Flight not found.")
-
 def cancelReservation():
     name = st.text_input("Enter your name:")
     flightNumber = st.number_input("Enter the flight number of your reservation:", min_value=1001, max_value=1000 + MAX_FLIGHTS, step=1, format="%d")
@@ -80,8 +79,7 @@ def cancelReservation():
                 st.success("Reservation cancelled successfully.")
                 return
         st.error("Passenger not found or no reservation found for this flight.")
-
- def displayBookedPassengers():
+def displayBookedPassengers():
     st.write("List of Booked Passengers:")
     isAdmin = st.radio("Are you an admin?", ("Yes", "No"))
     if isAdmin == "Yes":
