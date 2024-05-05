@@ -1,123 +1,54 @@
 import streamlit as st
-import time
+import sqlite3
 
-MAX_FLIGHTS = 10
-MAX_NAME_LENGTH = 50
-PASSPORT_ID_LENGTH = 10
+# Connect to SQLite database
+conn = sqlite3.connect('flight_reservation.db')
+c = conn.cursor()
 
-flights = []
-total_flights = 0
+# Create flights table if not exists
+c.execute('''CREATE TABLE IF NOT EXISTS flights 
+             (flightNumber INTEGER PRIMARY KEY, origin TEXT, destination TEXT, availableSeats INTEGER)''')
 
-passengers = []
-total_passengers = 0
-
-class Flight:
-    def __init__(self, flightNumber, origin, destination, availableSeats):
-        self.flightNumber = flightNumber
-        self.origin = origin
-        self.destination = destination
-        self.availableSeats = availableSeats
-
-class Passenger:
-    def __init__(self, name, address, age, passportID, flightNumber):
-        self.name = name
-        self.address = address
-        self.age = age
-        self.passportID = passportID
-        self.flightNumber = flightNumber
+# Create passengers table if not exists
+c.execute('''CREATE TABLE IF NOT EXISTS passengers 
+             (name TEXT, address TEXT, age INTEGER, passportID TEXT, flightNumber INTEGER)''')
 
 def addFlight(flightNumber, origin, destination, availableSeats):
-    global total_flights
-    if total_flights < MAX_FLIGHTS:
-        flight = Flight(flightNumber, origin, destination, availableSeats)
-        flights.append(flight)
-        total_flights += 1
-    else:
-        st.error("Cannot add more flights. Maximum limit reached.")
+    c.execute('''INSERT INTO flights (flightNumber, origin, destination, availableSeats) 
+                 VALUES (?, ?, ?, ?)''', (flightNumber, origin, destination, availableSeats))
+    conn.commit()
 
 def displayFlights():
     st.write("Available Flights:")
-    for flight in flights:
-        st.write(f"Flight {flight.flightNumber}: {flight.origin} to {flight.destination} - Available Seats: {flight.availableSeats}")
+    for row in c.execute("SELECT * FROM flights"):
+        st.write(f"Flight {row[0]}: {row[1]} to {row[2]} - Available Seats: {row[3]}")
 
-def bookFlight():
-    name = st.text_input("Enter your name:")
-    address = st.text_input("Enter your address:")
-    age = st.number_input("Enter your age:", min_value=0, max_value=150, step=1)
-    passportID = st.text_input("Enter your passport ID:")
-    flightNumber = st.number_input("Enter the flight number:", min_value=1001, max_value=1000 + MAX_FLIGHTS, step=1, format="%d")
-
-    if st.button("Book Flight"):
-        global total_passengers
-        for flight in flights:
-            if flight.flightNumber == flightNumber:
-                if flight.availableSeats > 0:
-                    if len(passportID) != 9:
-                        st.error("Invalid passport ID number.")
-                        return
-                    passenger = Passenger(name, address, age, passportID, flightNumber)
-                    passengers.append(passenger)
-                    flight.availableSeats -= 1
-                    total_passengers += 1
-                    st.success("Flight booked successfully.")
-                    displayFlights()
-                    return
-                else:
-                    st.error("No available seats for this flight.")
-                    return
-        st.error("Flight not found.")
-def cancelReservation():
-    name = st.text_input("Enter your name:")
-    flightNumber = st.number_input("Enter the flight number of your reservation:", min_value=1001, max_value=1000 + MAX_FLIGHTS, step=1, format="%d")
-
-    if st.button("Cancel Reservation"):
-        global total_passengers
-        for passenger in passengers:
-            if passenger.name == name and passenger.flightNumber == flightNumber:
-                passengers.remove(passenger)
-                total_passengers -= 1
-                st.success("Reservation cancelled successfully.")
-                return
-        st.error("Passenger not found or no reservation found for this flight.")
+def bookFlight(name, address, age, passportID, flightNumber):
+    c.execute('''INSERT INTO passengers (name, address, age, passportID, flightNumber) 
+                 VALUES (?, ?, ?, ?, ?)''', (name, address, age, passportID, flightNumber))
+    c.execute('''UPDATE flights SET availableSeats = availableSeats - 1 WHERE flightNumber = ?''', (flightNumber,))
+    conn.commit()
 
 def displayBookedPassengers():
     st.write("List of Booked Passengers:")
-    isAdmin = st.radio("Are you an admin?", ("Yes", "No"))
-    if isAdmin == "Yes":
-        username = st.text_input("Enter username:")
-        password = st.text_input("Enter password:", type="password")
-        if username == "Admin123" and password == "Admin321":
-            st.write("List of All Passengers:")
-            for passenger in passengers:
-                st.write(f"Passenger: {passenger.name}, Age: {passenger.age}, Address: {passenger.address}, Passport ID: {passenger.passportID}, Flight Number: {passenger.flightNumber}")
-            return  # Exit the function after displaying passengers for admin
-        elif username and password:  # If both username and password are provided
-            st.error("Invalid username or password. Access denied.")
-            return  # Exit the function after displaying the error message
-
-    # Display passengers for non-admin users or when admin credentials are incorrect
-    for passenger in passengers:
-        if isAdmin == "No" and passenger.name == username:  # Display only booked flights for the current user
-            flightNumber = str(passenger.flightNumber)  # Convert flight number to string for comparison
-            st.write(f"Passenger: {passenger.name}, Age: {passenger.age}, Flight Number: {flightNumber}")
-
-
-
+    for row in c.execute("SELECT * FROM passengers"):
+        st.write(f"Passenger: {row[0]}, Age: {row[2]}, Address: {row[1]}, Passport ID: {row[3]}, Flight Number: {row[4]}")
 
 def main():
-    addFlight(1001, "Surigao City", "Davao City", 100)
-    addFlight(1002, "Surigao City", "Cebu City", 80)
-    addFlight(1003, "Surigao City", "Manila", 120)
-
     st.title("Flight Reservation System")
-    menu = st.sidebar.selectbox("Menu", ["Display Available Flights", "Book a Flight", "Cancel Reservation", "Display Booked Passengers"])
+    menu = st.sidebar.selectbox("Menu", ["Display Available Flights", "Book a Flight", "Display Booked Passengers"])
 
     if menu == "Display Available Flights":
         displayFlights()
     elif menu == "Book a Flight":
-        bookFlight()
-    elif menu == "Cancel Reservation":
-        cancelReservation()
+        name = st.text_input("Enter your name:")
+        address = st.text_input("Enter your address:")
+        age = st.number_input("Enter your age:", min_value=0, max_value=150, step=1)
+        passportID = st.text_input("Enter your passport ID:")
+        flightNumber = st.number_input("Enter the flight number:", min_value=1001, max_value=1000 + MAX_FLIGHTS, step=1, format="%d")
+        if st.button("Book Flight"):
+            bookFlight(name, address, age, passportID, flightNumber)
+            st.success("Flight booked successfully.")
     elif menu == "Display Booked Passengers":
         displayBookedPassengers()
 
