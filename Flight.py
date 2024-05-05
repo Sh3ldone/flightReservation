@@ -13,6 +13,8 @@ c.execute('''CREATE TABLE IF NOT EXISTS flights
 c.execute('''CREATE TABLE IF NOT EXISTS passengers 
              (name TEXT, address TEXT, age INTEGER, passportID TEXT, flightNumber INTEGER)''')
 
+MAX_FLIGHTS = 10
+
 def addFlight(flightNumber, origin, destination, availableSeats):
     c.execute('''INSERT INTO flights (flightNumber, origin, destination, availableSeats) 
                  VALUES (?, ?, ?, ?)''', (flightNumber, origin, destination, availableSeats))
