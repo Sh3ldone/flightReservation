@@ -45,7 +45,7 @@ def bookFlight():
     address = st.text_input("Enter your address:")
     age = st.number_input("Enter your age:", min_value=0, max_value=150, step=1)
     passportID = st.text_input("Enter your passport ID:")
-    flightNumber = st.number_input("Enter the flight number:", min_value=1, max_value=MAX_FLIGHTS, step=1, format="%d")
+    flightNumber = st.number_input("Enter the flight number:", min_value=1001, max_value=1000 + MAX_FLIGHTS, step=1, format="%d")
 
     if st.button("Book Flight"):
         global total_passengers
@@ -69,7 +69,7 @@ def bookFlight():
 
 def cancelReservation():
     name = st.text_input("Enter your name:")
-    flightNumber = st.number_input("Enter the flight number of your reservation:", min_value=1, max_value=MAX_FLIGHTS, step=1, format="%d")
+    flightNumber = st.number_input("Enter the flight number of your reservation:", min_value=1001, max_value=1000 + MAX_FLIGHTS, step=1, format="%d")
 
     if st.button("Cancel Reservation"):
         global total_passengers
@@ -98,9 +98,9 @@ def displayBookedPassengers():
             st.write(f"Passenger: {passenger.name}, Age: {passenger.age}, Flight Number: {passenger.flightNumber}")
 
 def main():
-    addFlight(101, "Surigao City", "Davao City", 100)
-    addFlight(102, "Surigao City", "Cebu City", 80)
-    addFlight(103, "Surigao City", "Manila", 120)
+    addFlight(1001, "Surigao City", "Davao City", 100)
+    addFlight(1002, "Surigao City", "Cebu City", 80)
+    addFlight(1003, "Surigao City", "Manila", 120)
 
     st.title("Flight Reservation System")
     menu = st.sidebar.selectbox("Menu", ["Display Available Flights", "Book a Flight", "Cancel Reservation", "Display Booked Passengers"])
