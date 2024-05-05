@@ -97,8 +97,9 @@ def displayBookedPassengers():
 
     # Display passengers for non-admin users or when admin credentials are incorrect
     for passenger in passengers:
-        flightNumber = str(passenger.flightNumber)  # Convert flight number to string for comparison
-        st.write(f"Passenger: {passenger.name}, Age: {passenger.age}, Flight Number: {flightNumber}")
+        if isAdmin == "No" and passenger.name == username:  # Display only booked flights for the current user
+            flightNumber = str(passenger.flightNumber)  # Convert flight number to string for comparison
+            st.write(f"Passenger: {passenger.name}, Age: {passenger.age}, Flight Number: {flightNumber}")
 
 
 
