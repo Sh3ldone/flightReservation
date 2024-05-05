@@ -26,13 +26,6 @@ class Passenger:
         self.passportID = passportID
         self.flightNumber = flightNumber
 
-def loadingAnimation():
-    st.write("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t\t\t\t\t\t\t\tLoading", end="")
-    for _ in range(3):
-        st.write(".", end="", flush=True)
-        time.sleep(1)
-    st.write("\n")
-
 def addFlight(flightNumber, origin, destination, availableSeats):
     global total_flights
     if total_flights < MAX_FLIGHTS:
@@ -40,13 +33,12 @@ def addFlight(flightNumber, origin, destination, availableSeats):
         flights.append(flight)
         total_flights += 1
     else:
-        st.write("Cannot add more flights. Maximum limit reached.")
+        st.error("Cannot add more flights. Maximum limit reached.")
 
 def displayFlights():
     st.write("Available Flights:")
     for flight in flights:
         st.write(f"Flight {flight.flightNumber}: {flight.origin} to {flight.destination} - Available Seats: {flight.availableSeats}")
-    st.write()
 
 def bookFlight():
     name = st.text_input("Enter your name:")
@@ -61,19 +53,19 @@ def bookFlight():
             if flight.flightNumber == flightNumber:
                 if flight.availableSeats > 0:
                     if len(passportID) != 9:
-                        st.write("Invalid passport ID number.")
+                        st.error("Invalid passport ID number.")
                         return
                     passenger = Passenger(name, address, age, passportID, flightNumber)
                     passengers.append(passenger)
                     flight.availableSeats -= 1
                     total_passengers += 1
-                    st.write("Flight booked successfully.\n")
+                    st.success("Flight booked successfully.")
                     displayFlights()
                     return
                 else:
-                    st.write("No available seats for this flight.\n")
+                    st.error("No available seats for this flight.")
                     return
-        st.write("Flight not found.\n")
+        st.error("Flight not found.")
 
 def cancelReservation():
     name = st.text_input("Enter your name:")
@@ -85,34 +77,27 @@ def cancelReservation():
             if passenger.name == name and passenger.flightNumber == flightNumber:
                 passengers.remove(passenger)
                 total_passengers -= 1
-                st.write("Reservation cancelled successfully.\n")
+                st.success("Reservation cancelled successfully.")
                 return
-        st.write("Passenger not found or no reservation found for this flight.\n")
+        st.error("Passenger not found or no reservation found for this flight.")
 
 def displayBookedPassengers():
-    st.write("\t\t\t\t                                         List of Booked Passengers:")
+    st.write("List of Booked Passengers:")
     isAdmin = st.radio("Are you an admin?", ("Yes", "No"))
     if isAdmin == "Yes":
         username = st.text_input("Enter username:")
         password = st.text_input("Enter password:", type="password")
         if username == "Admin123" and password == "Admin321":
-            st.write("\n\n\t\t\t\t                                         List of All Passengers:")
-            st.write("\n\n\t\t\t\t     ====================================================================================================\n\n")
+            st.write("List of All Passengers:")
             for passenger in passengers:
-                st.write(f"\t\t\t\t     |Passenger: {passenger.name}, Age: {passenger.age}, Address: {passenger.address}, Passport ID: {passenger.passportID}, Flight Number: {passenger.flightNumber}")
-            st.write("\t\t\t\t     ====================================================================================================\n")
-            st.write()
+                st.write(f"Passenger: {passenger.name}, Age: {passenger.age}, Address: {passenger.address}, Passport ID: {passenger.passportID}, Flight Number: {passenger.flightNumber}")
         else:
-            st.write("Invalid username or password. Access denied.")
+            st.error("Invalid username or password. Access denied.")
     elif isAdmin == "No":
         for passenger in passengers:
-            st.write(f"\t\t\t\t     |                         Passenger: {passenger.name}, Age: {passenger.age}, Flight Number: {passenger.flightNumber}")
-    else:
-        st.write("Invalid input.")
+            st.write(f"Passenger: {passenger.name}, Age: {passenger.age}, Flight Number: {passenger.flightNumber}")
 
 def main():
-    loadingAnimation()
-
     addFlight(101, "Surigao City", "Davao City", 100)
     addFlight(102, "Surigao City", "Cebu City", 80)
     addFlight(103, "Surigao City", "Manila", 120)
