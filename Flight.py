@@ -24,8 +24,8 @@ def addFlight(flightNumber, origin, destination, availableSeats):
         c.execute('''INSERT INTO flights (flightNumber, origin, destination, availableSeats) 
                      VALUES (?, ?, ?, ?)''', (flightNumber, origin, destination, availableSeats))
         conn.commit()
-    except sqlite3.Error as e:
-        st.error(f"Error adding flight: {e}")
+    except sqlite3.IntegrityError:
+        st.warning(f"Flight {flightNumber} already exists in the database.")
 
 def displayFlights():
     try:
