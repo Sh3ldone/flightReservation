@@ -81,7 +81,7 @@ def cancelReservation():
                 return
         st.error("Passenger not found or no reservation found for this flight.")
 
-def displayBookedPassengers():
+ def displayBookedPassengers():
     st.write("List of Booked Passengers:")
     isAdmin = st.radio("Are you an admin?", ("Yes", "No"))
     if isAdmin == "Yes":
@@ -95,7 +95,9 @@ def displayBookedPassengers():
             st.error("Invalid username or password. Access denied.")
     elif isAdmin == "No":
         for passenger in passengers:
-            st.write(f"Passenger: {passenger.name}, Age: {passenger.age}, Flight Number: {passenger.flightNumber}")
+            flightNumber = str(passenger.flightNumber)  # Convert flight number to string for comparison
+            st.write(f"Passenger: {passenger.name}, Age: {passenger.age}, Flight Number: {flightNumber}")
+
 
 def main():
     addFlight(1001, "Surigao City", "Davao City", 100)
