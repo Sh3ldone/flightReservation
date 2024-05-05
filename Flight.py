@@ -54,11 +54,6 @@ def bookFlight(name, address, age, passportID, flightNumber):
                 st.warning("Please provide all required information of your parent.")
                 return
 
-            else:
-                parent_name = None
-                parent_contact = None
-                parent_email = None
-            
         else:
             parent_name = None
             parent_contact = None
@@ -73,6 +68,7 @@ def bookFlight(name, address, age, passportID, flightNumber):
         st.success("Flight booked successfully.")
     except sqlite3.Error as e:
         st.error(f"Error booking flight: {e}")
+
 
 
 def displayBookedPassengers():
