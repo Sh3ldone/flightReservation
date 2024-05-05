@@ -45,7 +45,7 @@ def bookFlight():
     address = st.text_input("Enter your address:")
     age = st.number_input("Enter your age:", min_value=0, max_value=150, step=1)
     passportID = st.text_input("Enter your passport ID:")
-    flightNumber = st.number_input("Enter the flight number:", min_value=1, max_value=MAX_FLIGHTS, step=1)
+    flightNumber = st.number_input("Enter the flight number:", min_value=1, max_value=MAX_FLIGHTS, step=1, format="%d")
 
     if st.button("Book Flight"):
         global total_passengers
@@ -69,7 +69,7 @@ def bookFlight():
 
 def cancelReservation():
     name = st.text_input("Enter your name:")
-    flightNumber = st.number_input("Enter the flight number of your reservation:", min_value=1, max_value=MAX_FLIGHTS, step=1)
+    flightNumber = st.number_input("Enter the flight number of your reservation:", min_value=1, max_value=MAX_FLIGHTS, step=1, format="%d")
 
     if st.button("Cancel Reservation"):
         global total_passengers
