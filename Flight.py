@@ -43,7 +43,7 @@ def bookFlight(name, address, age, passportID, flightNumber, parent_name=None, p
             parent_email = st.text_input("Enter the email address of your parent:")
             
             # Check if all parent information is provided
-            if not parent_name or not parent_contact or not parent_email:
+            if not (parent_name and parent_contact and parent_email):
                 st.warning("Please provide all required information of your parent.")
                 return
 
