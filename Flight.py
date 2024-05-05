@@ -99,22 +99,23 @@ def main():
     while True:
         choice = st.radio(
             "SURIGAO DEL NORTE STATE UNIVERSITY\nFLIGHT RESERVATION SYSTEM",
-            ("Display Available Flights", "Book a Flight", "Cancel Reservation", "Display Booked Passengers", "Exit")
+            ("Display Available Flights", "Book a Flight", "Cancel Reservation", "Display Booked Passengers", "Exit"),
+            key="choice"  # Unique key for this radio widget
         )
 
         if choice == "Display Available Flights":
             display_flights()
         elif choice == "Book a Flight":
             display_flights()
-            name = st.text_input("Enter your name:")
-            address = st.text_input("Enter your address:")
-            age = st.number_input("Enter your age:")
-            passport_id = st.text_input("Enter your passport ID:")
-            flight_number = st.number_input("Enter the flight number:")
+            name = st.text_input("Enter your name:", key="name")  # Unique key for this text input widget
+            address = st.text_input("Enter your address:", key="address")  # Unique key for this text input widget
+            age = st.number_input("Enter your age:", key="age")  # Unique key for this number input widget
+            passport_id = st.text_input("Enter your passport ID:", key="passport_id")  # Unique key for this text input widget
+            flight_number = st.number_input("Enter the flight number:", key="flight_number")  # Unique key for this number input widget
             book_flight(name, address, age, passport_id, flight_number)
         elif choice == "Cancel Reservation":
-            name = st.text_input("Enter your name:")
-            flight_number = st.number_input("Enter the flight number of your reservation:")
+            name = st.text_input("Enter your name:", key="cancel_name")  # Unique key for this text input widget
+            flight_number = st.number_input("Enter the flight number of your reservation:", key="cancel_flight_number")  # Unique key for this number input widget
             cancel_reservation(name, flight_number)
         elif choice == "Display Booked Passengers":
             display_booked_passengers()
@@ -124,3 +125,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
