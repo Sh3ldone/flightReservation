@@ -48,6 +48,11 @@ def bookFlight(name, address, age, passportID, flightNumber):
             parent_name = st.text_input("Enter the name of your parent:")
             parent_contact = st.text_input("Enter the contact number of your parent:")
             parent_email = st.text_input("Enter the email address of your parent:")
+            
+            # Check if all parent information is provided
+            if not parent_name or not parent_contact or not parent_email:
+                st.warning("Please provide all required information of your parent.")
+                return
         else:
             parent_name = None
             parent_contact = None
@@ -59,9 +64,9 @@ def bookFlight(name, address, age, passportID, flightNumber):
                      
         c.execute('''UPDATE flights SET availableSeats = availableSeats - 1 WHERE flightNumber = ?''', (flightNumber,))
         conn.commit()
+        st.success("Flight booked successfully.")
     except sqlite3.Error as e:
         st.error(f"Error booking flight: {e}")
-
 
 def displayBookedPassengers():
     try:
