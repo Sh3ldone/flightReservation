@@ -12,7 +12,8 @@ try:
 
     # Create passengers table if not exists
     c.execute('''CREATE TABLE IF NOT EXISTS passengers 
-                 (name TEXT, address TEXT, age INTEGER, passportID TEXT, flightNumber INTEGER)''')
+                 (name TEXT, address TEXT, age INTEGER, passportID TEXT, flightNumber INTEGER,
+                  parentName TEXT, parentContact TEXT, parentEmail TEXT)''')
 
     MAX_FLIGHTS = 10
 
@@ -33,15 +34,7 @@ def addFlight(flightNumber, origin, destination, availableSeats):
     except sqlite3.Error as e:
         st.error(f"An error occurred: {e}")
 
-def displayFlights():
-    try:
-        st.write("Available Flights:")
-        for row in c.execute("SELECT * FROM flights"):
-            st.write(f"Flight {row[0]}: {row[1]} to {row[2]} - Available Seats: {row[3]}")
-    except sqlite3.Error as e:
-        st.error(f"Error displaying flights: {e}")
-
-def bookFlight(name, address, age, passportID, flightNumber):
+def bookFlight(name, address, age, passportID, flightNumber, parent_name=None, parent_contact=None, parent_email=None):
     try:
         if age < 18:
             st.info("Since you are below 18 years old, we need some information from your parents.")
@@ -54,11 +47,6 @@ def bookFlight(name, address, age, passportID, flightNumber):
                 st.warning("Please provide all required information of your parent.")
                 return
 
-        else:
-            parent_name = None
-            parent_contact = None
-            parent_email = None
-            
         c.execute('''INSERT INTO passengers (name, address, age, passportID, flightNumber, parentName, parentContact, parentEmail) 
                      VALUES (?, ?, ?, ?, ?, ?, ?, ?)''', 
                      (name, address, age, passportID, flightNumber, parent_name, parent_contact, parent_email))
@@ -68,6 +56,21 @@ def bookFlight(name, address, age, passportID, flightNumber):
         st.success("Flight booked successfully.")
     except sqlite3.Error as e:
         st.error(f"Error booking flight: {e}")
+
+def displayBookedPassengers():
+    try:
+        st.write("List of Booked Passengers:")
+        for row in c.execute("SELECT * FROM passengers"):
+            passenger_info = f"Passenger: {row[0]}, Age: {row[2]}, Address: {row[1]}, Passport ID: {row[3]}, Flight Number: {row[4]}"
+            if row[5]:  # If parent information exists
+                parent_info = f"Parent Name: {row[5]}, Contact: {row[6]}, Email: {row[7]}"
+                passenger_info += f", {parent_info}"
+            st.write(passenger_info)
+    except sqlite3.Error as e:
+        st.error(f"Error displaying booked passengers: {e}")
+
+# The rest of the code remains unchanged...
+
 
 
 
